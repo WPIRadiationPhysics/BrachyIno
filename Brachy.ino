@@ -52,8 +52,6 @@ void setup() {
 // Motor run loop
 void loop() {
 
-  stepTick = longTick;
-
   // Push-button activation
   buttonState = digitalRead(7);
   if ( buttonState == LOW ) {
@@ -79,7 +77,8 @@ void steppingAction() {
   stepCount = 0;
   while ( stepCount < totalSteps ) {
 
-    // Ramping
+    // Default step
+    stepTick = longTick;
     stepTime = stepCount/totalSteps;
 
     // Initially accelerate from 300 to 100 microsecond delay
