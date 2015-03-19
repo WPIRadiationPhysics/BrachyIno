@@ -1,12 +1,12 @@
 /*
    Motor forward:
-   GPIO_8 = low, GPIO_9 = hi
+   GPIO_8 = hi, GPIO_9 = hi/low steps
 
    Motor reverse:
-   GPIO_8 = hi, GPIO_9 = low
+   GPIO_8 = low, GPIO_9 = hi/low steps
 
    Alternating ticks sleep
-                             */
+                                       */
 
 
 // Declare vars
@@ -21,7 +21,6 @@ float longTick = 0;
 float rampingTime = 0;
 float insertionTime = 0;
 int buttonState = 0;
-int GPIOpin = 0;
 
 
 // Establish connection to device GPIO
@@ -34,13 +33,13 @@ void setup() {
   pinMode(9, OUTPUT);
   pinMode(7, INPUT_PULLUP);
 
-  // Initialize GPIO
+  // Initialize GPIO forward
   digitalWrite(8, HIGH);
   digitalWrite(9, LOW);
 
   // Constants
   rampingTime = 0.1;                     // Percent of oscillation
-  insertionLength = 1;                   // inches
+  insertionLength = 10;                  // inches
   revolutions = insertionLength/3.7665;  // 1 rev = 3.7665 in.
   longTick = 300;                        // microseconds
   shortTick = 100;                       //
@@ -60,12 +59,13 @@ void loop() {
     Serial.println(buttonState);
 
     // Insertion
-    GPIOpin = 9;
+    digitalWrite(8, HIGH);
     steppingAction();
+    
     delayMicroseconds(insertionTime);
 
     // Withdrawal
-    GPIOpin = 8;
+    digitalWrite(8, LOW);
     steppingAction();
   }
 }
@@ -78,7 +78,7 @@ void steppingAction() {
   while ( stepCount < totalSteps ) {
 
     // Default step
-    stepTick = longTick;
+    stepTick = shortTick;
     stepTime = stepCount/totalSteps;
 
     // Initially accelerate from 300 to 100 microsecond delay
@@ -92,9 +92,9 @@ void steppingAction() {
     }
 
     // Take Step
-    digitalWrite(GPIOpin, HIGH);
+    digitalWrite(9, HIGH);
     delayMicroseconds(stepTick);
-    digitalWrite(GPIOpin, LOW);
+    digitalWrite(9, LOW);
     delayMicroseconds(stepTick);
 
     stepCount++;
