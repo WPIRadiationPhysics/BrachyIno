@@ -1,4 +1,4 @@
 # BrachyIno
 Arduino catheter controller for brachytherapy experiments
 
-More info to come
+Inserts a brachytherapy wire into target for a period of time and withdraws, using hardware specs defined in setup().
