@@ -19,7 +19,6 @@ float revolutions = 0;
 float shortTick = 0;
 float longTick = 0;
 float rampingTime = 0;
-float insertionTime = 0;
 int buttonState = 0;
 
 
@@ -44,27 +43,24 @@ void setup() {
   longTick = 300;                        // microseconds
   shortTick = 100;                       //
   totalSteps = 6400*revolutions;         //
-  insertionTime = (1e6)*10;              // seconds
 }
 
 
 // Motor run loop
 void loop() {
 
-  // Push-button activation
+  // Push-button insertion
   buttonState = digitalRead(7);
   if ( buttonState == LOW ) {
 
-    // Display button state
-    Serial.println(buttonState);
-
-    // Insertion
     digitalWrite(8, HIGH);
     steppingAction();
-    
-    delayMicroseconds(insertionTime);
+  }
 
-    // Withdrawal
+  // Push-button withdrawl
+  buttonState = digitalRead(7);
+  if ( buttonState == LOW ) {
+
     digitalWrite(8, LOW);
     steppingAction();
   }
